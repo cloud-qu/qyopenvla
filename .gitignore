@@ -2,7 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+modified_libero_rlds/
+wandb/
+openvla/
+*logs/
+tmp/
 # C extensions
 *.so
 
