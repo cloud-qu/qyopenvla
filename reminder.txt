@@ -1,0 +1,3 @@
+优化：
+√ 新写了dataloader中的_IterableDatasetFetcher，进行子进程读取
+2. 优化特征提取部分，实现离线，可进一步优化十小时

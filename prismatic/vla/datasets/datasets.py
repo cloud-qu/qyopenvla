@@ -26,7 +26,6 @@ from prismatic.vla.datasets.rlds.utils.data_utils import NormalizationType
 # HuggingFace Default / LLaMa-2 IGNORE_INDEX (for labels)
 IGNORE_INDEX = -100
 
-
 @dataclass
 class RLDSBatchTransform:
     action_tokenizer: ActionTokenizer
@@ -38,7 +37,7 @@ class RLDSBatchTransform:
     def __call__(self, rlds_batch: Dict[str, Any]) -> Dict[str, Any]:
         """Converts a RLDS batch to the format expected by the OpenVLA collator/models."""
         dataset_name, action = rlds_batch["dataset_name"], rlds_batch["action"][0]
-        img = Image.fromarray(rlds_batch["observation"]["image_primary"][0])
+        img = Image.fromarray(rlds_batch["observation"]["image_primary"][0]) #224, 224, 3->PIL.Image
         lang = rlds_batch["task"]["language_instruction"].decode().lower()
 
         # Construct Chat-based Prompt =>> Input is default query + language instruction, output are the action tokens
@@ -64,7 +63,9 @@ class RLDSBatchTransform:
         if not self.predict_stop_token:
             labels[-1] = IGNORE_INDEX
 
-        return dict(pixel_values=pixel_values, input_ids=input_ids, labels=labels, dataset_name=dataset_name)
+        return dict(pixel_values=pixel_values, input_ids=input_ids, labels=labels, dataset_name=dataset_name, 
+                    raw_imgs=torch.tensor(rlds_batch["observation"]["image_primary"][0]),
+                    )
 
 
 class RLDSDataset(IterableDataset):
